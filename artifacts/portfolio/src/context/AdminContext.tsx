@@ -126,14 +126,14 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const deleteMessage = async (id: string) => {
     try {
       await apiFetch(`/messages/${id}`, { method: 'DELETE' });
-    } catch { }
+    } catch {}
     setData(prev => ({ ...prev, messages: prev.messages.filter(m => m.id !== id) }));
   };
 
   const markMessageRead = async (id: string) => {
     try {
       await apiFetch(`/messages/${id}/read`, { method: 'PATCH' });
-    } catch { }
+    } catch {}
     setData(prev => ({
       ...prev,
       messages: prev.messages.map(m => m.id === id ? { ...m, read: true } : m),
@@ -156,55 +156,6 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   return (
     <AdminContext.Provider value={{ data, loading, updateData, addMessage, deleteMessage, markMessageRead, isAuthenticated, login, logout }}>
-      {children}
-    </AdminContext.Provider>
-  );
-};
-
-export const useAdmin = () => {
-  const context = useContext(AdminContext);
-  if (!context) throw new Error('useAdmin must be used within an AdminProvider');
-  return context;
-};  const persist = (d: PortfolioData) => {
-    setData(d);
-    localStorage.setItem('portfolioData', JSON.stringify(d));
-  };
-
-  const updateData = (newData: PortfolioData) => persist(newData);
-
-  const addMessage = (msg: Omit<ContactMessage, 'id' | 'timestamp' | 'read'>) => {
-    const newMsg: ContactMessage = {
-      ...msg,
-      id: `msg_${Date.now()}`,
-      timestamp: Date.now(),
-      read: false,
-    };
-    const updated = { ...data, messages: [newMsg, ...(data.messages || [])] };
-    persist(updated);
-  };
-
-  const deleteMessage = (id: string) => {
-    const updated = { ...data, messages: (data.messages || []).filter(m => m.id !== id) };
-    persist(updated);
-  };
-
-  const markMessageRead = (id: string) => {
-    const updated = {
-      ...data,
-      messages: (data.messages || []).map(m => m.id === id ? { ...m, read: true } : m),
-    };
-    persist(updated);
-  };
-
-  const login = (_pass: string) => false;
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    sessionStorage.removeItem('isAdminAuthenticated');
-  };
-
-  return (
-    <AdminContext.Provider value={{ data, updateData, addMessage, deleteMessage, markMessageRead, isAuthenticated, login, logout }}>
       {children}
     </AdminContext.Provider>
   );
