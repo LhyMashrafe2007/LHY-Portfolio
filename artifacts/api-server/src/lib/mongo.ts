@@ -1,15 +1,28 @@
 import mongoose from "mongoose";
+import { logger } from "./logger";
 
 const uri = process.env["MONGODB_ATLAS_URI"];
 
-if (!uri) {
-  throw new Error("MONGODB_ATLAS_URI environment variable is required");
-}
-
 let connection: typeof mongoose | null = null;
+let connected = false;
 
 export async function connectMongo() {
+  if (!uri) {
+    logger.warn("MONGODB_ATLAS_URI not set — running without database");
+    return null;
+  }
   if (connection) return connection;
-  connection = await mongoose.connect(uri);
-  return connection;
+  try {
+    connection = await mongoose.connect(uri);
+    connected = true;
+    logger.info("MongoDB connected");
+    return connection;
+  } catch (err) {
+    logger.error({ err }, "MongoDB connection failed");
+    throw err;
+  }
+}
+
+export function isConnected() {
+  return connected;
 }
