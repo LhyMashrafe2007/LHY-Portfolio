@@ -91,6 +91,10 @@ const initialData = {
   },
 };
 
+router.get("/bootstrap", (_req, res) => {
+  res.status(405).json({ error: "Use POST /api/bootstrap" });
+});
+
 router.post("/bootstrap", async (req, res) => {
   if (!isConnected()) {
     res.status(503).json({ error: "Database not connected" });
