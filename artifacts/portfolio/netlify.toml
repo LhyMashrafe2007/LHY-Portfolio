@@ -1,11 +1,4 @@
-[build]
-  base = "artifacts/portfolio"
-  command = "npm install && npx vite build"
-  publish = "dist"
-
-[build.environment]
-  NODE_VERSION = "20"
-
+# Root netlify.toml handles all build configuration.
 [[redirects]]
   from = "/*"
   to = "/index.html"
