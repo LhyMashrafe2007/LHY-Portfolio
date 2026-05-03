@@ -1,0 +1,12 @@
+[build]
+  command = "corepack enable pnpm && pnpm install --frozen-lockfile && pnpm --filter @workspace/portfolio run build"
+  publish = "artifacts/portfolio/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  PNPM_VERSION = "10"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
